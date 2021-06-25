@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-    public static final int BOARDSIDE=7;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -21,16 +21,9 @@ public class App extends Application {
         primaryStage.setTitle("Zee");
         primaryStage.setResizable(false);;
 
-        Group bord = new Group();
+        Board board = new Board( primaryStage );
 
-        for (int i = 0; i < 49 ; i++) {
-            Hokje h = new Hokje( Integer.toString(i) );
-            bord.getChildren().add( h );
-            System.out.println( "Hokje "+ i + " style:" + h.getStyle() );
-        }
-        primaryStage.setScene(new Scene(bord, BOARDSIDE*Hokje.SIDE+1, BOARDSIDE*Hokje.SIDE+1));
-
-        primaryStage.show();
+        board.show();
     }
 
     public static void main(String[] args) {
