@@ -23,7 +23,7 @@ public class App extends Application {
 
         Board board = new Board( primaryStage );
 
-        board.show();
+
     }
 
     public static void main(String[] args) {

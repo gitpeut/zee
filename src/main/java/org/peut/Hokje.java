@@ -1,16 +1,31 @@
 package org.peut;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 
 
 public class Hokje extends Button{
+    //length and width of each square
+    public static final int SIDE=60;
+    // class wide counts to determine position of a new square
     private static int xcount=0;
     private static int ycount=0;
-    public static final int SIDE=60;
+
+    public static void resetXYcount(){
+        xcount = 0;
+        ycount = 0;
+    }
+
+    // is there a ship in this square?
 
     private boolean occupied = false;
-    Ship    ship;
+    // reference to the ship if so
+    private Ship    ship;
+    //back reference to the board
+    private Board   board;
+    private int     index;
 
     private void place(){
 
@@ -27,22 +42,32 @@ public class Hokje extends Button{
             this.setStyle("-fx-background-color: skyblue");
         }
 
+        this.index =  xcount + (ycount* Board.BOARDSIDE);
+
         ++xcount;
-        if ( xcount > 6 ){
+        if ( xcount >= Board.BOARDSIDE ){
             ++ycount;
             xcount = 0;
         }
 
     }
 
-    Hokje() {
+    Hokje( Board board) {
+        this.board = board;
+
+        this.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Hokje hokje = (Hokje) e.getSource();
+
+                System.out.println("clicked " + hokje.getIndex());
+
+                hokje.checkSquare();
+            }
+        });
+
         this.place();
     }
 
-    Hokje( String title){
-        super( title );
-        this.place();
-    }
 
     public boolean isOccupied() {
         return occupied;
@@ -60,31 +85,44 @@ public class Hokje extends Button{
         this.ship = ship;
     }
 
-    public void show(){
-
+    public int getIndex() {
+        return index;
     }
 
-    private void checkSquare( Hokje square ) {
-        if (square.isOccupied()) {
-            Ship tmpShip = square.getShip();
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
-            if (tmpShip.isDead()) {
+    public void show(){
+        System.out.println("- Hokje " + index );
+    }
+
+    private void checkSquare() {
+        if ( isOccupied()) {
+
+            if ( ship.isDead()) {
                 System.out.println("Shooting wreckage is counter productive");
             } else {
-                if (tmpShip.isDamaged(square)){
-                    System.out.println("Crypto #" + tmpShip.getNumber() + " - " + tmpShip.getName() + " already damaged here");
+                if ( ship.isDamaged( this)){
+                    System.out.println("Ship #" + ship.getNumber() + " - " + ship.getName() + " already damaged here");
                 }else {
                     System.out.println( "Hit!" );
-                    if (tmpShip.hit(square)) {
-                        System.out.println("Crypto #" + tmpShip.getNumber() + " - " + tmpShip.getName() + " is dead");
-                        numberOfCryptos--;
+
+                    this.setStyle("-fx-background-color: gray");
+
+                    if ( ship.hit( this)) {
+                        System.out.println("Ship #" + ship.getNumber() + " - " + ship.getName() + " is dead");
+                        for( Hokje d : ship.getDamagedParts() ){
+                            d.setStyle("-fx-background-color: black");
+                        }
+                        board.setShipsLeft(  board.getShipsLeft() - 1  );
                     } else {
-                        System.out.println("Crypto #" + tmpCrypto.getNumber() + " - " + tmpCrypto.getName() + " is damaged");
+                        System.out.println("Ship #" + ship.getNumber() + " - " + ship.getName() + " is damaged");
                     }
                 }
             }
         }else{
-            System.out.println("Missed, nothing at " +  (char)(square.getRow() + 'A') + ", column " + square.getColumn() );
+            System.out.println("Missed, nothing at " +  index );
         }
     }
 
