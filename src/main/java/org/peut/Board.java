@@ -59,7 +59,8 @@ public class Board extends Group {
             shipSurface += ships[i].getLength();
         }
 
-        grenades = (BOARDSIDE * BOARDSIDE) / 2 + shipSurface;
+        grenades  = (BOARDSIDE * BOARDSIDE) / 2 + shipSurface;
+        shipsLeft = SHIPCOUNT;
 
         setStageTitle(SHIPCOUNT + " ships of unknown size must be destroyed");
 
