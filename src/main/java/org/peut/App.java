@@ -13,16 +13,13 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-
-
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Zee");
-        primaryStage.setResizable(false);;
+        primaryStage.setResizable(false);
 
-        Board board = new Board( primaryStage );
-
+        Board board = new Board(primaryStage);
 
     }
 

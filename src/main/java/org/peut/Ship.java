@@ -10,54 +10,54 @@ public class Ship {
     private ArrayList<Hokje> healthyParts;
     private ArrayList<Hokje> damagedParts;
 
-    private String      name;
-    private int         number;
-    private boolean     dead;
+    private String name;
+    private int number;
+    private boolean dead;
 
 
-    Ship( String name, Board board ){
-        this.name    = name;
-        this.dead    = false;
+    Ship(String name, Board board) {
+        this.name = name;
+        this.dead = false;
         healthyParts = new ArrayList<Hokje>();
         damagedParts = new ArrayList<Hokje>();
 
-        placeShip( board );
+        placeShip(board);
     }
 
-    private void placeShip( Board board ){
+    private void placeShip(Board board) {
         boolean vertical = false;
-        if ( (Math.random() * 10) < 5 ) vertical = true;
+        if ((Math.random() * 10) < 5) vertical = true;
 
 
-        length = (int) Math.floor( (Math.random() * 3.2 ) + 1 );
+        length = (int) Math.floor((Math.random() * 3.2) + 1);
         System.out.println("length of" + this.name + " is " + length);
 
         boolean ready = false;
         int maxcount = 100;
 
-        while ( ! ready && maxcount >= 0 ){
+        while (!ready && maxcount >= 0) {
             int endrow = Board.BOARDSIDE;
             int endcol = Board.BOARDSIDE;
 
-            if( vertical ){
-                endrow -= 2;
-            }else{
-                endcol -= 2;
+            if (vertical) {
+                endrow -= (length - 1);
+            } else {
+                endcol -= (length - 1);
             }
 
             Random r = new Random();
-            int startRow = r.nextInt( endrow);
-            int startCol = r.nextInt( endcol);
+            int startRow = r.nextInt(endrow);
+            int startCol = r.nextInt(endcol);
 
             ready = true;
-            if ( vertical ) {
-                for( int i = 0; i < length; ++i) {
+            if (vertical) {
+                for (int i = 0; i < length; ++i) {
                     if (board.getHokje(startRow + i, startCol).isOccupied()) {
                         ready = false;
                         break;
                     }
                 }
-            }else {
+            } else {
                 for (int i = 0; i < length; ++i) {
                     if (board.getHokje(startRow, startCol + i).isOccupied()) {
                         ready = false;
@@ -66,38 +66,38 @@ public class Ship {
                 }
             }
 
-            if ( ready ) {
-                if ( vertical ) {
-                    for( int i = 0; i < length; ++i) {
+            if (ready) {
+                if (vertical) {
+                    for (int i = 0; i < length; ++i) {
 
                         Hokje square = board.getHokje(startRow + i, startCol);
-                        square.setOccupied( true);
-                        square.setShip( this);
-                        healthyParts.add( square );
+                        square.setOccupied(true);
+                        square.setShip(this);
+                        healthyParts.add(square);
                     }
-                }else {
+                } else {
                     for (int i = 0; i < length; ++i) {
 
                         Hokje square = board.getHokje(startRow, startCol + i);
-                        square.setOccupied( true);
-                        square.setShip( this );
-                        healthyParts.add( square );
+                        square.setOccupied(true);
+                        square.setShip(this);
+                        healthyParts.add(square);
                     }
                 }
-            }else{
+            } else {
                 System.out.println("Ship replace " + name);
                 maxcount--;
             }
 
         }
 
-        if ( maxcount >= 0 ){
-            board.setShipsLeft( (board.getShipsLeft() + 1) );
+        if (maxcount >= 0) {
+            board.setShipsLeft((board.getShipsLeft() + 1));
             this.number = board.getShipsLeft();
 
-            this.show() ;
-        }else{
-            throw new IllegalArgumentException( "No space found for " + name + ". Reduce number of ships.");
+            this.show();
+        } else {
+            throw new IllegalArgumentException("No space found for " + name + ". Reduce number of ships.");
         }
 
     }
@@ -122,6 +122,14 @@ public class Ship {
         return dead;
     }
 
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
     public ArrayList<Hokje> getDamagedParts() {
         return damagedParts;
     }
@@ -131,27 +139,27 @@ public class Ship {
     }
 
 
-    public boolean isDamaged(Hokje square ){
-        if ( !healthyParts.contains( square ) ){
-            return( true );
+    public boolean isDamaged(Hokje square) {
+        if (!healthyParts.contains(square)) {
+            return (true);
         }
-        return(false);
+        return (false);
     }
 
     public boolean hit(Hokje square) {
         healthyParts.remove(square);
         damagedParts.add(square);
-        if ( healthyParts.isEmpty() ){
+        if (healthyParts.isEmpty()) {
             dead = true;
         }
         return dead;
     }
 
-    public void show(){
+    public void show() {
         System.out.println("Ship name: " + name);
-        if ( ! dead ) {
-            System.out.println("Hokjes occupied by #" + number + " - " + name );
-            for ( Hokje a : healthyParts) {
+        if (!dead) {
+            System.out.println("Hokjes occupied by #" + number + " - " + name);
+            for (Hokje a : healthyParts) {
                 a.show();
             }
         }
