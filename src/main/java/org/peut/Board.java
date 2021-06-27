@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 
 public class Board extends Group {
@@ -20,7 +20,7 @@ public class Board extends Group {
     public static final int SHIPCOUNT = 6;
     private Hokje[] board;
     private Stage stage;
-    Ship ships[];
+    Ship[] ships;
     private int shipsLeft;
     private int grenades;
 
@@ -36,10 +36,17 @@ public class Board extends Group {
 
     private void init() {
 
+        // removing all children of the board, avoid previously used objects staying around.
+        while( ! this.getChildren().isEmpty() ){
+            this.getChildren().remove(0);
+        }
+
+        // remove old board by assigning a new array
         board = new Hokje[(BOARDSIDE * BOARDSIDE)];
 
+        // make sure the first allocated Hokje is at zero,zero
+
         Hokje.resetXYcount();
-        Arrays.fill(board, null);
 
         // add BOARDSIDE x BOARDSIDE Hokjes to the Board
 
@@ -48,21 +55,21 @@ public class Board extends Group {
             this.getChildren().add(board[i]);
             //System.out.println( "Hokje "+ i + " style:" + h.getStyle() );
         }
-
+        // make sure hokje 0,0 gets focus. Handy for keyboard operation
         board[0].requestFocus();
 
         // add SHIPCOUNT ships
         ships = new Ship[SHIPCOUNT];
         int shipSurface = 0;
         for (int i = 0; i < SHIPCOUNT; i++) {
-            ships[i] = new Ship("Arrogance-" + (i + 1), this);
+            ships[i] = new Ship("BMS Baddy" + (i + 1), this);
             shipSurface += ships[i].getLength();
         }
 
         grenades  = (BOARDSIDE * BOARDSIDE) / 2 + shipSurface;
         shipsLeft = SHIPCOUNT;
 
-        setStageTitle(SHIPCOUNT + " ships of unknown size must be destroyed");
+        setStageTitle(SHIPCOUNT + " ship" + (( SHIPCOUNT == 1)?"":"s") + " of unknown size must be destroyed");
 
     }
 
@@ -90,9 +97,7 @@ public class Board extends Group {
         quitButton.setText("Quit");
         quitButton.setCancelButton(true);
 
-        quitButton.setOnAction(e -> {
-            stage.close();
-        });
+        quitButton.setOnAction(e -> stage.close());
 
         Button againButton = new Button();
 
@@ -104,9 +109,7 @@ public class Board extends Group {
         againButton.setText("Again");
         againButton.setDefaultButton(true);
 
-        againButton.setOnAction(e -> {
-            init();
-        });
+        againButton.setOnAction(e -> init());
 
         FlowPane box = new FlowPane();
         box.setStyle("-fx-background-color: skyblue");
@@ -133,8 +136,8 @@ public class Board extends Group {
 
         this.getChildren().add(box);
 
-        // to make sure enter will reach the againButton (which has been setsetDefaultButton
-        // as defaultButton. Igf not the last boardButton will be selected.
+        // to make sure enter will reach the againButton (which has been set as
+        // as defaultButton. If not the last boardButton will be selected.
 
         box.requestFocus();
 
@@ -158,7 +161,7 @@ public class Board extends Group {
     }
 
     public void setStageTitle(String title) {
-        stage.setTitle("Grenades left: [" + grenades + "] " + title);
+        stage.setTitle("Grenades left: [" + grenades + "] Ships left: [" + shipsLeft + "] " + title);
     }
 
     public int rowcolToNumber(int row, int column) {
@@ -166,8 +169,8 @@ public class Board extends Group {
     }
 
     public int[] numberToRowcol(int number) {
-        int rowcol[] = new int[2];
-        rowcol[0] = (int) (number / Board.BOARDSIDE);
+        int[] rowcol = new int[2];
+        rowcol[0] = number / Board.BOARDSIDE;
         rowcol[1] = number % Board.BOARDSIDE;
 
         return (rowcol);

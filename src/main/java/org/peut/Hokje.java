@@ -103,7 +103,7 @@ public class Hokje extends Button {
         board.setGrenades(board.getGrenades() - 1);
         if (board.getGrenades() <= 0) {
             int shipsLeft = board.getShipsLeft();
-            board.setStageTitle("No more grenades. " + shipsLeft + " ship" + (shipsLeft > 1 ? "s" : "") + " left. You lost.");
+            board.setStageTitle("No more grenades.  You lost.");
             board.gameOver();
             return;
         }
