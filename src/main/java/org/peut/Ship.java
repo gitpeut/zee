@@ -18,8 +18,8 @@ public class Ship {
     Ship(String name, Board board) {
         this.name = name;
         this.dead = false;
-        healthyParts = new ArrayList<Hokje>();
-        damagedParts = new ArrayList<Hokje>();
+        healthyParts = new ArrayList<>();
+        damagedParts = new ArrayList<>();
 
         placeShip(board);
     }
